@@ -314,6 +314,8 @@ export const AuctionBody = () => {
     arr4 = arr3;
   }
 
+  console.log(n)
+
   return (
     <div className="container-fluid">
       {auction && <ProgressBar auction={auction} setAuction={setAuction} />}

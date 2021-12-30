@@ -42,46 +42,35 @@ const handlerInfo =()=>{
     <div className="col">
         {currentUser && (
       <div className="card shadow-sm">
-      {/*   <div
-          onClick={handlerInfo}
-          style={{
-            height: "180px",
-            backgroundImage: `url(${item.imgUrl})`,
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center"
-          }}
-          className="w-100 mt-4"
-        /> */}
        
-        <div className="card-body p-4">
+        <div className="card-body p-4 py-2">
 
-          <div className="border d-flex border-success justify-content-between">
-            <span className="mr-5 bg-success p-1">
+          <div className="border border-success row">
+            <span className="bg-success p-1 col-md-3">
               <span className="text-white px-2">
-                Categoria {item.categorie.charAt(0).toUpperCase() + item.categorie.slice(1)} 
+                {item.categorie.charAt(0).toUpperCase() + item.categorie.slice(1)} 
               </span>
             </span>
          
-            <span className="mx-5 p-1">
+            <span className="p-1 col-md-2">
               <span className="text-secondary ">KL </span> {item.title3}
             </span> 
 
-            <span className="mx-5 p-1">
+            <span className=" p-1 col-md-2">
               <span className="text-secondary ">Unidad </span> {item.title}
             </span> 
 
-            <span className="mx-5 p-1">
+            <span className="col-md-3 p-1">
               <span>{date}, {hora.slice(0, -3)}</span>
             </span>
 
-            <span className="mx-5 p-1">
-              <span className="text-secondary ">Costo Total</span> {item.title2}
+            <span className=" col-md-2 p-1">
+              <span className="text-secondary ">Costo</span> {item.title2}
             </span> 
           </div>
 
             <div>
-              <span className="text-secondary ">Algo: </span> {item.title1}
+              <span className="text-secondary ">Descripcion: </span> {item.title1}
             </div>
 
             <div>
