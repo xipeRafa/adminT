@@ -345,7 +345,7 @@ export const AuctionBody = () => {
           </div> */}
           <div className="col-1"></div>
           <div
-            className={n?.length > 0 ? "d-none" : "col-3 text-center mb-4 me-5"}
+            className={n?.length > 0 ? "d-none" : "col-md-3 text-center mb-4 me-5"}
           >
             <DatePicker
               selected={fecha}
@@ -357,13 +357,13 @@ export const AuctionBody = () => {
             />
           </div>
           <div
-            className={arr?.length > 0 ? "col-1 fs-2 row-back" : "d-none"}
+            className={arr?.length > 0 ? "col-md-1 fs-2 row-back" : "d-none"}
             onClick={() => location.reload()}
           >
             🔙
           </div>
 
-          <div className="col-3 text-center">
+          <div className="col-md-3 mb-4 text-center">
             <form onSubmit={handleSubmit}>
               <input
                 type="text"
@@ -413,7 +413,7 @@ export const AuctionBody = () => {
           </div> 
 
           {/* -=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */}
-          <div className={n?.length > 0 ? "col-3 mb-3" : "d-none"}>
+          <div className={n?.length > 0 ? "col-md-3 mb-3 " : "d-none"}>
             <div className="w-100 mt-0">
               <label className="text-white mb-3 mx-4">
                 <input
