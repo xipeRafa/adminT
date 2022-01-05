@@ -65,7 +65,7 @@ const handlerInfo =()=>{
             </span>
 
             <span className=" col-md-2 p-1">
-              <span className="text-secondary ">Costo</span> {item.title2}
+              <span className="text-secondary ">Costo</span> {item.costo}
             </span> 
           </div>
 
