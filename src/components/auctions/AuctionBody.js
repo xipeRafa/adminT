@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { AuctionCard } from "./AuctionCard";
-import { ProgressBar } from "./ProgressBar";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -13,17 +12,10 @@ import es from "date-fns/locale/es";
 registerLocale("es", es);
 
 export const AuctionBody = () => {
-  const [auction, setAuction] = useState(null);
   const { currentUser, globalMsg } = useContext(AuthContext);
 
   const { docs } = useFirestore('auctions');
   let DB = docs
-
-  const [itemState, setItemState] = useState();
-
-  const handleState = (a) => {
-    setItemState(a);
-  };
 
   let admin = currentUser ? currentUser.email : false;
 
@@ -33,9 +25,7 @@ export const AuctionBody = () => {
     "superadmin2@gmail.com" ||
     "superadmin3@gmail.com"
   ) {
-    DBD = DB.sort((o1, o2) =>
-      o1.completed === o2.completed ? 0 : o2.completed ? -1 : 1
-    );
+    DBD = DB
   } else {
     DBD = [];
   }
@@ -59,7 +49,7 @@ export const AuctionBody = () => {
     let tomorrow = today + 86400000;
 
     let today2 = new Date(today).toLocaleDateString("es-CL", {
-      weekday: "long", // narrow, short
+      weekday: "short", // narrow, short
       year: "numeric", // 2-digit
       month: "short", // numeric, 2-digit, narrow, long
       day: "numeric" // 2-digit
@@ -99,7 +89,7 @@ export const AuctionBody = () => {
 
     let sss = arr
       .filter((el) => el !== undefined)
-      .map((el) => el.title === mail && el);
+      .map((el) => el.unidad === mail && el);
 
     setN(sss);
   };
@@ -107,33 +97,16 @@ export const AuctionBody = () => {
   /* ===================================== filter Mail END==================== */
 
   /* ===================================== Radio Filter ==================== */
-   const [radio, setRadio] = useState();
+  
 
   const [arrRadio, setArrRadio] = useState([]);
 
-  const handlerRadio = (v) => {
-    setRadio(v);
-    setArrRadio([]);
-    const toRadio = n?.filter((el) => el !== false);
-    let r = toRadio;
-
-    if (radio === "completados") {
-      r = toRadio.filter((el) => el.completed !== true);
-      setArrRadio(r);
-    } else {
-      r = toRadio.filter((el) => el.completed !== false);
-      setArrRadio(r);
-    }
-  }; 
   /* ===================================== Radio Filter END ==================== */
 
   /* ===================================== Clientes Filter ==================== */
 
-  let db = n
-    ?.sort((o1, o2) => o1.duration - o2.duration) //last to near
-    .sort((o1, o2) =>
-      o1.completed === o2.completed ? 0 : o2.completed ? -1 : 1
-    );
+  let db = n?.sort((o1, o2) => o2.duration - o1.duration) //last to near
+   
 
   const [mantenimiento, setmantenimiento] = useState(true);
   const [reparacion, setreparacion] = useState(true);
@@ -196,99 +169,6 @@ export const AuctionBody = () => {
   /* ===================================== Clientes Filter END ==================== */
 
 
-  /* ===================================== last 24 hours ==================== */
- /*  let lastWeek  = Date.now()-86400000 * 7  */
-  let lastDay = Date.now() - 86400000;
-  let lastHour = Date.now() - 3600000;
-  let lastMinute = Date.now() - 60000;
-
-  const [min, setMin] = useState();
-
-  const [f, setF] = useState(1);
-
-  const handlerInputM = (e) => {
-    setF(e.target.value);
-  };
-
-  let r = 60000 * f;
-
-  const t2 = DBD.filter((el) => el !== undefined).filter((el) => el.completed === false)
-
-  useEffect(() => {
-
-    let personasMap2 = t2.filter((el) => el.duration > lastMinute - r).map((item) => {
-      return [item.email, item];
-    });
-    let personasMapArr2 = new Map(personasMap2);
-
-    let unicos2 = [...personasMapArr2.values()];
-    setMin(unicos2);
-  }, [f]);
-
-  const handlerMinute = () => {
-
-    let personasMap2 = t2.filter((el) => el.duration > lastMinute - r).map((item) => {
-      return [item.email, item];
-    });
-    let personasMapArr2 = new Map(personasMap2);
-
-    let unicos2 = [...personasMapArr2.values()];
-    setMin(unicos2);
-    setD([]);
-    setH([]);
-  };
-
-  const [d, setD] = useState();
-
-  const handlerDay = () => {
-
-    let personasMap = t2.filter((el) => el.duration > lastDay).map((item) => {
-      return [item.email, item];
-    });
-    let personasMapArr = new Map(personasMap); // Pares de clave y valor
-
-    let unicos = [...personasMapArr.values()]; // Conversión a un array
-    setD(unicos);
-    setMin([]);
-    setH([]);
-  };
-
-  const [h, setH] = useState();
-
-  const [hr, setHr] = useState(1);
-
-  const handlerInputH = (e) => {
-    setHr(e.target.value);
-  };
-
-  let rr = 3600000 * hr;
-
-  useEffect(() => {
-
-    let personasMap1 = t2.filter((el) => el.duration > lastHour - rr).map((item) => {
-      return [item.email, item];
-    });
-    let personasMapArr1 = new Map(personasMap1); // Pares de clave y valor
-
-    let unicos1 = [...personasMapArr1.values()]; // Conversión a un array
-    setH(unicos1);
-  }, [hr]);
-
-  const handlerHour = () => {
-
-    let personasMap1 = t2.filter((el) => el.duration > lastHour).map((item) => {
-      return [item.email, item];
-    });
-    let personasMapArr1 = new Map(personasMap1); // Pares de clave y valor
-
-    let unicos1 = [...personasMapArr1.values()]; // Conversión a un array
-    setH(unicos1);
-    setMin([]);
-    setD([]);
-  };
-
-  /* ===================================== last 24 hours END ==================== */
-
   let arr3 = arr;
 
   if (n) {
@@ -300,10 +180,7 @@ export const AuctionBody = () => {
   } else {
     if (arr) {
       arr3 = arr
-        .sort((o1, o2) => o1.duration - o2.duration) //last to near
-        .sort((o1, o2) =>
-          o1.completed === o2.completed ? 0 : o2.completed ? -1 : 1
-        );
+        .sort((o1, o2) => o2.duration - o1.duration) //last to near
     }
   }
 
@@ -317,7 +194,6 @@ export const AuctionBody = () => {
 
   return (
     <div className="container-fluid">
-      {auction && <ProgressBar auction={auction} setAuction={setAuction} />}
 
       <div
         style={{ zIndex: "9999999" }}
@@ -327,21 +203,37 @@ export const AuctionBody = () => {
       </div>
       {admin && (
         <div className="row bg-secondary pt-4 ">
-         {/*  <div className="text-white bg-primary mb-3 p-1">
-            <span style={{ marginLeft: "20px" }}>
-              <span className="p-1">{l}</span> viajes el dia: {today2} de todos
-              los Taxistas
+
+          <div className={arr.length > 0 ? "text-white bg-primary mb-3 p-1 row" : 'd-none'}>
+
+            <span style={{ marginLeft: "20px" }} className="col-md-4">
+              <span className="p-1">{l}</span> Trabajos el Dia : {today2}
             </span>
+
+
             <span
               style={{ marginLeft: "50px" }}
-              className={n?.length > 0 ? "" : "d-none"}
+              className={n?.length > 0 ? "col-md-3" : "d-none"}
             >
-              <span className="bg-danger p-1">
-                {n?.filter((el) => el.completed === false).length}
+              <span className="bg-dark p-1">
+               $ {n?.filter((el) => el !== false).reduce((acc, curr) => acc + curr?.costo, 0).toFixed(2)}
               </span>{" "}
-              viajes Sin Completar de {mail}
+              En taller para la unidad {mail}
             </span>
-          </div> */}
+
+            <span
+              style={{ marginLeft: "50px" }}
+              className={arrRadio?.length > 0 ? "col-md-3" : "d-none"}
+            >
+              <span className="bg-dark p-1">
+               $ {arrRadio?.filter((el) => el !== false).reduce((acc, curr) => acc + curr?.costo, 0).toFixed(2)}
+              </span>{" "}
+              En servicios Mostrados
+            </span>
+            
+          </div> 
+
+
           <div className="col-1"></div>
           <div
             className={n?.length > 0 ? "d-none" : "col-md-3 text-center mb-4 me-5"}
@@ -377,39 +269,6 @@ export const AuctionBody = () => {
             </form>
           </div>
           <div className="col-1"></div>
-          <div className={arr?.length > 0 ? "col-3 mt-0 d-none" : "d-none"}>
-            <div
-              className={n?.length > 0 ? "w-50" : "d-none"}
-              onChange={(e) => handlerRadio(e.target.value)}
-            >
-              <input
-                type="button"
-                className="text-white btn btn-secondary"
-                name="drone"
-                value="Todos"
-                onClick={() => setArrRadio([])}
-              />
-
-              <label className="btn text-white btn-secondary">
-                <input
-                  type="radio"
-                  value="completados"
-                  name="drone"
-                  className="d-none"
-                />
-                Completados
-              </label>
-              <label className="btn text-white btn-secondary">
-                <input
-                  type="radio"
-                  value="nocompletados"
-                  name="drone"
-                  className="d-none"
-                />
-                No Completados
-              </label>
-            </div>
-          </div> 
 
           {/* -=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */}
           <div className={n?.length > 0 ? "col-md-3 mb-3 " : "d-none"}>
@@ -418,7 +277,7 @@ export const AuctionBody = () => {
                 <input
                   type="checkbox"
                   className="m-1"
-                  value="mantenimiento"
+                  value="Mantenimiento"
                   onChange={(e) => handlemantenimiento(e)}
                   checked={mantenimiento}
                 />
@@ -429,7 +288,7 @@ export const AuctionBody = () => {
                 <input
                   type="checkbox"
                   className="m-1"
-                  value="reparacion"
+                  value="Reparacion"
                   onChange={(e) => handlereparacion(e)}
                   checked={reparacion}
                 />
@@ -440,7 +299,7 @@ export const AuctionBody = () => {
                 <input
                   type="checkbox"
                   className="m-1"
-                  value="choque"
+                  value="Choque"
                   onChange={(e) => handleChoque(e)}
                   checked={choque}
                 />
@@ -452,16 +311,12 @@ export const AuctionBody = () => {
                 <input
                   type="checkbox"
                   className="m-1"
-                  value="llantas"
+                  value="Llantas"
                   onChange={(e) => handlellantas(e)}
                   checked={llantas}
                 />
                 LLantas
               </label>
-          
-
-
-
 
            {/*    <label className="text-white">
                 <input
@@ -477,110 +332,6 @@ export const AuctionBody = () => {
           </div>
         </div>
       )}
-
-      {/* =================================================================================================================================================================================================================================== */}
-
-     {/*  <div className="d-flex flex-row justify-content-evenly p-4">
-        <input
-          type="button"
-          className={arr?.length > 0 ? "d-none" : "btn btn-primary"}
-          value="Ultimo Minuto"
-          onClick={handlerMinute}
-        />
-
-        <input
-          type="button"
-          className={arr?.length > 0 ? "d-none" : "btn btn-primary"}
-          value="Ultima Hora"
-          onClick={handlerHour}
-        />
-
-        <input
-          type="button"
-          className={arr?.length > 0 ? "d-none" : "btn btn-primary"}
-          value="Ultimas 24 Horas"
-          onClick={handlerDay}
-        />
-      </div>
-
-      <div
-        className={
-          arr?.length > 0 ? "d-none" : min?.length > 0 ? "p-1 mb-3" : "d-none"
-        }
-      >
-        <h4 className="p-1 bg-secondary text-white">
-          Taxistas con Viajes sin Completar desde el Ultimo Minuto +
-          <input
-            type="number"
-            className="mx-5"
-            onChange={handlerInputM}
-            value={f}
-          />
-        </h4>
-
-        {
-          <div className="p-3 text-center mb-3">
-            {min?.map((doc) => {
-              return (
-                <span className="border border-danger mx-2 p-2 bg-white">
-                  {doc.email.slice(0, -10)}
-                </span>
-              );
-            })}
-          </div>
-        }
-      </div>
-
-      <div
-        className={
-          arr?.length > 0 ? "d-none" : h?.length > 0 ? "p-1 mb-3" : "d-none"
-        }
-      >
-        <h4 className="p-1 bg-secondary text-white">
-          Taxistas con Viajes sin Completar de la Ultima Hora +
-          <input
-            type="number"
-            className="mx-5"
-            onChange={handlerInputH}
-            value={hr}
-          />
-        </h4>
-
-        {
-          <div className="p-3 text-center mb-3">
-            {h?.map((doc) => {
-              return (
-                <span className="border border-danger mx-2 p-2 bg-white">
-                  {doc.email.slice(0, -10)}
-                </span>
-              );
-            })}
-          </div>
-        }
-      </div>
-
-      <div
-        className={
-          arr?.length > 0 ? "d-none" : d?.length > 0 ? "p-1 mb-3" : "d-none"
-        }
-      >
-        <h4 className="p-2 bg-secondary text-white">
-          Taxistas con viajes sin Completar de las Ultimas 24 Horas
-        </h4>
-
-        {
-          <div className="p-3 text-center mb-3">
-            {d?.map((doc) => {
-              return (
-                <span className="border border-danger mx-2 p-2 bg-white">
-                  {doc.email.slice(0, -10)}
-                </span>
-              );
-            })}
-          </div>
-        }
-      </div> */}
-      
     
 
       {DB && (
@@ -589,11 +340,7 @@ export const AuctionBody = () => {
             .filter((el) => el !== undefined)
             .map((doc) => {
               return (
-                <AuctionCard
-                  item={doc}
-                  key={doc.id}
-                  handleState={handleState}
-                />
+                <AuctionCard item={doc} key={doc.id} />
               );
             })}
         </div>
