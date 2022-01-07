@@ -17,23 +17,38 @@ export const AuctionBody = () => {
   const { docs } = useFirestore('auctions');
   let DB = docs
 
-  let admin = currentUser ? currentUser.email : false;
+  const [year, setYear]=useState()
 
-  let DBD;
-  if (
-    admin === "superadmin@gmail.com" ||
-    "superadmin2@gmail.com" ||
-    "superadmin3@gmail.com"
-  ) {
-    DBD = DB
-  } else {
-    DBD = [];
+
+  const handlerYear = (e) =>{
+    setYear(e.target.value)
   }
 
+  const handler = (e) =>{
+    e.preventDefault()
+
+    
+  }
+
+  let u = DB.filter(el => el.unidad === year)
+  console.log(u)
+
+  let total = u.reduce((acc, curr) => acc + curr?.costo, 0).toFixed(2)
+
+  let mantenim = u.filter(el => el.categorie === 'Mantenimiento')
+                 .reduce((acc, curr) => acc + curr?.costo, 0).toFixed(2)
+
+  let rep = u.filter(el => el.categorie === 'Reparacion')
+              .reduce((acc, curr) => acc + curr?.costo, 0).toFixed(2)
+
+  let choq = u.filter(el => el.categorie === 'Choque')
+                .reduce((acc, curr) => acc + curr?.costo, 0).toFixed(2)
+
+  let llant = u.filter(el => el.categorie === 'Llantas')
+                .reduce((acc, curr) => acc + curr?.costo, 0).toFixed(2)
+
   /* ===================================== filter Date ==================== */
-  const dateFocus = () => {
-    setArr([]);
-  };
+
 
   const [today2, setToday2] = useState();
 
@@ -177,12 +192,7 @@ export const AuctionBody = () => {
     if (arrRadio.length > 0) {
       arr3 = arrRadio.filter((el) => el !== false);
     }
-  } else {
-    if (arr) {
-      arr3 = arr
-        .sort((o1, o2) => o2.duration - o1.duration) //last to near
-    }
-  }
+  } 
 
   let arr4 = [];
 
@@ -190,10 +200,11 @@ export const AuctionBody = () => {
     arr4 = arr3;
   }
 
-  console.log(n)
+ 
+
 
   return (
-    <div className="container-fluid">
+    <div className="container-fluid ">
 
       <div
         style={{ zIndex: "9999999" }}
@@ -201,7 +212,7 @@ export const AuctionBody = () => {
       >
         {globalMsg && <Alert variant="danger">{globalMsg}</Alert>}
       </div>
-      {admin && (
+      {currentUser && (
         <div className="row bg-secondary pt-4 ">
 
           <div className={arr.length > 0 ? "text-white bg-primary mb-3 p-1 row" : 'd-none'}>
@@ -241,7 +252,6 @@ export const AuctionBody = () => {
             <DatePicker
               selected={fecha}
               onChange={onDate}
-              onFocus={dateFocus}
               locale="es"
               className="pickers mb-3 form-control mt-2 w-100 bg-secondary"
               dateFormat="dd 'de' MMMM 'de' yyyy"
@@ -329,10 +339,27 @@ export const AuctionBody = () => {
                 Cliente Externo
               </label> */}
             </div>
+
+            
           </div>
+          
+            
+          
         </div>
       )}
-    
+
+      <form className="row" onSubmit={handler} >
+        <input type="text" className="w-100" onChange={handlerYear} />
+      </form>
+
+      <div style={{backgroundColor:'rgba(111,222,190, .3)' }} className={u.length > 0 ? 'mt-2 px-3 pt-2 pb-1' : 'd-none'} >
+        <p>Mantenimientos ${mantenim}</p>
+        <p>Reparaciones ${rep}</p>
+        <p>Choques ${choq}</p>
+        <p>Llantas ${llant}</p>
+        <br/>
+        <p>Total <span className="bg-dark text-white p-1">{total}</span> Por Todo el Año 2022</p>
+      </div>           
 
       {DB && (
         <div className="row row-cols-1 p-5 g-3 border mt-1 ">

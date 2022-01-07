@@ -35,7 +35,7 @@ export const RegisterComp = () => {
 
   return (
     <>
-      <div onClick={openForm} className="btn btn-outline-secondary mx-2 d-none">
+      <div onClick={openForm} className="btn mx-2 d-none">
         Registro
       </div>  
       <Modal centered show={showForm} onHide={closeForm}>
